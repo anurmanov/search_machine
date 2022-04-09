@@ -1,7 +1,7 @@
 import os
 import json
 from typing import Optional, List
-from searchers.base_searcher import Searcher
+from worker.searchers.base_searcher import Searcher
 from .constants import USERS, TICKETS, ORGANIZATIONS
 
 

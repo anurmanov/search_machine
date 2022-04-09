@@ -10,6 +10,6 @@ class Searcher(ABC):
         """
         raise NotImplementedError('_connect method is not implemented!')
 
-    def search(self, payload: dict) -> Optional[List[dict]]:
+    def search(self, payload: dict) -> dict:
         raise NotImplementedError('search method is not implemented!')
 
