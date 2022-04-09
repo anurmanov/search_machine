@@ -1,7 +1,8 @@
 import os
 import json
 from typing import Optional, List
-from .base_searcher import Searcher
+from db.searchers.base_searcher import Searcher
+from .constants import USERS, TICKETS, ORGANIZATIONS
 
 
 class JsonSearcher(Searcher):
@@ -45,7 +46,7 @@ class JsonSearcher(Searcher):
         for related_entity, fields in include.items():
             related_result[related_entity] = list()
             related_items = None
-            if entity == 'organizations':
+            if entity == ORGANIZATIONS:
                 related_items = self._get_items_by_filter(
                     related_entity,
                     fields,
@@ -54,8 +55,8 @@ class JsonSearcher(Searcher):
                     }
                 )
 
-            elif entity == 'tickets':
-                if related_entity == 'organizations':
+            elif entity == TICKETS:
+                if related_entity == ORGANIZATIONS:
                     related_items = self._get_items_by_filter(
                         related_entity,
                         fields,
@@ -64,7 +65,7 @@ class JsonSearcher(Searcher):
                         }
                     )
 
-                elif related_entity == 'users':
+                elif related_entity == USERS:
                     submitters = self._get_items_by_filter(
                         related_entity,
                         fields,
@@ -84,8 +85,8 @@ class JsonSearcher(Searcher):
                         'assignee': assignees[0]
                     }
 
-            elif entity == 'users':
-                if related_entity == 'organizations':
+            elif entity == USERS:
+                if related_entity == ORGANIZATIONS:
                     related_items = self._get_items_by_filter(
                         related_entity,
                         fields,
@@ -93,7 +94,7 @@ class JsonSearcher(Searcher):
                             "_id": item['organization_id']
                         }
                     )
-                elif related_entity == 'tickets':
+                elif related_entity == TICKETS:
                     submitted_tickets = self._get_items_by_filter(
                         related_entity,
                         fields,
