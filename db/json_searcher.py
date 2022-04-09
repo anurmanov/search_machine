@@ -1,7 +1,7 @@
 import os
 import json
 from typing import Optional, List
-from .worker import Searcher
+from .base_searcher import Searcher
 
 
 class JsonSearcher(Searcher):
