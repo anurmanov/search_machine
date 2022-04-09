@@ -1,7 +1,7 @@
 import pytest
 from typing import Optional, List, Dict
-from db.searchers.json.json_searcher import JsonSearcher
-from db.searchers.json.constants import USERS, TICKETS, ORGANIZATIONS
+from searchers.json.json_searcher import JsonSearcher
+from searchers.json.constants import USERS, TICKETS, ORGANIZATIONS
 
 
 @pytest.fixture()
