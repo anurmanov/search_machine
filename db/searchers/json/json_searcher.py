@@ -19,7 +19,7 @@ class JsonSearcher(Searcher):
 
     def _match(self, item: dict, filter: dict) -> bool:
         res = True
-        for k, v in filter:
+        for k, v in filter.items():
             if item.get(k) != v:
                 res = False
                 break
@@ -27,58 +27,70 @@ class JsonSearcher(Searcher):
 
     def _get_items_by_filter(self,
                              entity: str,
-                             fields: list,
-                             filter: dict) -> Optional[List[dict]]:
+                             filter: dict,
+                             fields: list = None) -> Optional[List[dict]]:
         result = []
         for item in self._db[entity]:
             if self._match(item, filter):
-                result.append(self._trim_item(item, fields))
+                result.append(self.get_trimmed_copy_of_item(item, fields) if fields else item)
         return result
 
-    def _trim_item(self, item: dict, fields: list) -> dict:
-        trimed_item = {}
+    def get_trimmed_copy_of_item(self, item: dict, fields: list) -> dict:
+        trimmed_item = {}
         for field in fields:
-            trimed_item[field] = item[field]
-        return trimed_item
+            trimmed_item[field] = item[field]
+
+        return trimmed_item
+
+    def trim_item(self, item: dict, fields: list) -> None:
+        keys_of_item = item.keys()
+        keys_to_remove = []
+        for key_of_item in keys_of_item:
+            if key_of_item not in fields:
+                keys_to_remove.append(key_of_item)
+
+        for key_to_remove in keys_to_remove:
+            del item[key_to_remove]
 
     def _get_related(self, entity: str, item: dict, include: dict) -> dict:
         related_result = {}
+
         for related_entity, fields in include.items():
             related_result[related_entity] = list()
             related_items = None
             if entity == ORGANIZATIONS:
                 related_items = self._get_items_by_filter(
                     related_entity,
-                    fields,
                     {
                         "organization_id": item['_id']
-                    }
+                    },
+                    fields
                 )
 
             elif entity == TICKETS:
                 if related_entity == ORGANIZATIONS:
                     related_items = self._get_items_by_filter(
                         related_entity,
-                        fields,
                         {
                             "_id": item['organization_id']
-                        }
+                        },
+                        fields
                     )
 
                 elif related_entity == USERS:
                     submitters = self._get_items_by_filter(
                         related_entity,
-                        fields,
                         {
                             "_id": item['submitter_id']
-                        }
+                        },
+                        fields
                     )
                     assignees = self._get_items_by_filter(
                         related_entity,
-                        fields,
                         {
                             "_id": item['assignee_id']
-                        }
+                        },
+                        fields
                     )
                     related_items = {
                         'submitter': submitters[0],
@@ -89,25 +101,25 @@ class JsonSearcher(Searcher):
                 if related_entity == ORGANIZATIONS:
                     related_items = self._get_items_by_filter(
                         related_entity,
-                        fields,
                         {
                             "_id": item['organization_id']
-                        }
+                        },
+                        fields
                     )
                 elif related_entity == TICKETS:
                     submitted_tickets = self._get_items_by_filter(
                         related_entity,
-                        fields,
                         {
                             "submitter_id": item['_id']
-                        }
+                        },
+                        fields
                     )
                     assigned_tickets = self._get_items_by_filter(
                         related_entity,
-                        fields,
                         {
                             "assignee_id": item['_id']
-                        }
+                        },
+                        fields
                     )
 
                     related_items = {
@@ -120,16 +132,17 @@ class JsonSearcher(Searcher):
 
         return related_result
 
-    def search(self, payload: dict) -> Optional[List[dict]]:
+    def search(self, payload: dict) -> dict:
         entity = payload['entity']
         filter = payload['filter']
         fields = payload['fields']
         include = payload['include']
 
-        search_results = self._get_items_by_filter(entity, fields, filter)
+        search_results = self._get_items_by_filter(entity, filter)
         if search_results:
             for item in search_results:
                 item.update(self._get_related(entity, item, include))
+                self.trim_item(item, fields + list(include.keys()))
 
-        return search_results
+        return {entity: search_results}
 
