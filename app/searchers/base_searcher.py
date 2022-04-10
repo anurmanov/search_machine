@@ -14,3 +14,5 @@ class Searcher(ABC):
     def search(self, payload: dict) -> dict:
         raise NotImplementedError('search method is not implemented!')
 
+    def get_record_by_index(self, entity: str, index: int = 0) -> dict:
+        raise NotImplementedError('get_record_by_index method is not implemented!')
