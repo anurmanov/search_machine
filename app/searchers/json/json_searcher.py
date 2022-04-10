@@ -19,6 +19,9 @@ class JsonSearcher(Searcher):
                     self._db[file[:-5]] = json.load(open(f"{root}/{file}"))
 
     def _match(self, item: dict, filter: dict) -> bool:
+        """
+        Matches item according to filter
+        """
         res = True
         for k, v in filter.items():
             if item.get(k) != v:
@@ -30,6 +33,9 @@ class JsonSearcher(Searcher):
                              entity: str,
                              filter: dict,
                              fields: list = None) -> Optional[List[dict]]:
+        """
+        Matching items according to filter
+        """
         result = []
         for item in self._db[entity]:
             if self._match(item, filter):
@@ -37,13 +43,28 @@ class JsonSearcher(Searcher):
         return result
 
     def get_trimmed_copy_of_item(self, item: dict, fields: list) -> dict:
-        trimmed_item = {}
-        for field in fields:
-            trimmed_item[field] = item[field]
+        """
+        Method copies an item and cut of all fields which is not in a list fields
+        :param item: an item for trimming
+        :param fields: a list of fields which must remain in copy of item
+        :return: Trimmed copy
+        """
+        if fields:
+            trimmed_item = {}
+            for field in fields:
+                trimmed_item[field] = item[field]
+        else:
+            trimmed_item = copy(item)
 
         return trimmed_item
 
     def trim_item(self, item: dict, fields: list) -> None:
+        """
+        Method removes all redundant fields in the item
+        :param item: an item for trimming
+        :param fields: a list of fields which must remain in copy of item
+        :return:
+        """
         if fields:
             keys_of_item = item.keys()
             keys_to_remove = []
@@ -55,6 +76,13 @@ class JsonSearcher(Searcher):
                 del item[key_to_remove]
 
     def _get_related(self, entity: str, item: dict, include: Optional[dict]) -> dict:
+        """
+        Method gets all related items of the entity's item (users, tickets, organizations)
+        :param entity:
+        :param item: the item of the entity
+        :param include: a dictionary of names of thr related
+        :return:
+        """
         related_result = {}
 
         if not include:
@@ -138,6 +166,11 @@ class JsonSearcher(Searcher):
         return related_result
 
     def search(self, payload: dict) -> dict:
+        """
+        The main method 
+        :param payload: a description of what we looking for
+        :return: the search result
+        """
         entity = payload['entity']
         filter = payload['filter']
         fields = payload.get('fields', [])

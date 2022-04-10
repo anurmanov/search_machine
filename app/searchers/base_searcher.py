@@ -5,7 +5,9 @@ class Searcher(ABC):
     def _connect(self, *args, **kwargs) -> dict:
         """
         This private method must contain a logic
-        of the connecting to the storage for searching in
+        of the connecting to the storage for searching in.
+        Must be called from __init__()
+        One searcher holds one connection.
         """
         raise NotImplementedError('_connect method is not implemented!')
 

@@ -19,6 +19,9 @@ async def search_endpoint(payload: Payload) -> JSONResponse:
 
 @app.get('/stats', status_code=200)
 async def stats_endpoint() -> JSONResponse:
+    """
+    Endpoint for providing statistics about the worker
+    """
     duration = datetime.now() - Statistics.start_time
 
     d = {}
@@ -35,11 +38,17 @@ async def stats_endpoint() -> JSONResponse:
 
 @app.on_event('startup')
 def startup_event():
+    """
+    Clear statistics on startup
+    """
     Statistics.count_of_requests = 0
     Statistics.start_time = datetime.now()
 
 
 @app.on_event('shutdown')
 def shutdown_event():
+    """
+    Clear statistics on shutdown
+    """
     Statistics.count_of_requests = 0
 
