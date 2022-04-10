@@ -1,0 +1,21 @@
+version: "3"
+services:
+  worker:
+    build: ./worker
+    image: worker:search_machine
+    volumes:
+      - ./worker/app:/app
+      - ./json:/db
+    environment:
+      - SEARCHER=json
+      - JSON_DIR=/db
+    expose:
+      - 5000
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - worker
+    ports:
+      - 4000:4000
