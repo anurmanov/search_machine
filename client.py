@@ -24,7 +24,7 @@ if __name__ == '__main__':
     try:
         response = requests.post(search_url, json=payload, timeout=3)
         if response.status_code == 200:
-            # output to console reponse in a pretty format
+            # output to the console a response in a pretty format
             resp_obj = json.loads(response.text)
             print(json.dumps(resp_obj, indent=2))
         else:
