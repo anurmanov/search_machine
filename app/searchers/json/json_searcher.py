@@ -1,7 +1,8 @@
 import os
 import json
+from copy import copy
 from typing import Optional, List
-from worker.searchers.base_searcher import Searcher
+from app.searchers.base_searcher import Searcher
 from .constants import USERS, TICKETS, ORGANIZATIONS
 
 
@@ -15,7 +16,7 @@ class JsonSearcher(Searcher):
         for root, _, files in os.walk(db_dir):
             for file in files:
                 if file.endswith('.json'):
-                    self._db[file[:-4]] = json.load(open(f"{root}/{file}"))
+                    self._db[file[:-5]] = json.load(open(f"{root}/{file}"))
 
     def _match(self, item: dict, filter: dict) -> bool:
         res = True
@@ -32,7 +33,7 @@ class JsonSearcher(Searcher):
         result = []
         for item in self._db[entity]:
             if self._match(item, filter):
-                result.append(self.get_trimmed_copy_of_item(item, fields) if fields else item)
+                result.append(self.get_trimmed_copy_of_item(item, fields) if fields else copy(item))
         return result
 
     def get_trimmed_copy_of_item(self, item: dict, fields: list) -> dict:
@@ -43,17 +44,21 @@ class JsonSearcher(Searcher):
         return trimmed_item
 
     def trim_item(self, item: dict, fields: list) -> None:
-        keys_of_item = item.keys()
-        keys_to_remove = []
-        for key_of_item in keys_of_item:
-            if key_of_item not in fields:
-                keys_to_remove.append(key_of_item)
+        if fields:
+            keys_of_item = item.keys()
+            keys_to_remove = []
+            for key_of_item in keys_of_item:
+                if key_of_item not in fields:
+                    keys_to_remove.append(key_of_item)
 
-        for key_to_remove in keys_to_remove:
-            del item[key_to_remove]
+            for key_to_remove in keys_to_remove:
+                del item[key_to_remove]
 
-    def _get_related(self, entity: str, item: dict, include: dict) -> dict:
+    def _get_related(self, entity: str, item: dict, include: Optional[dict]) -> dict:
         related_result = {}
+
+        if not include:
+            return related_result
 
         for related_entity, fields in include.items():
             related_result[related_entity] = list()
@@ -135,14 +140,15 @@ class JsonSearcher(Searcher):
     def search(self, payload: dict) -> dict:
         entity = payload['entity']
         filter = payload['filter']
-        fields = payload['fields']
-        include = payload['include']
+        fields = payload.get('fields', [])
+        include = payload.get('include', [])
 
         search_results = self._get_items_by_filter(entity, filter)
         if search_results:
             for item in search_results:
-                item.update(self._get_related(entity, item, include))
-                self.trim_item(item, fields + list(include.keys()))
+                related = self._get_related(entity, item, include)
+                self.trim_item(item, fields )
+                item.update(related)
 
         return {entity: search_results}
 

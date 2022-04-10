@@ -1,7 +1,7 @@
 import pytest
 from typing import Optional, List, Dict
-from searchers.json.json_searcher import JsonSearcher
-from searchers.json.constants import USERS, TICKETS, ORGANIZATIONS
+from app.searchers.json.json_searcher import JsonSearcher
+from app.searchers.json.constants import USERS, TICKETS, ORGANIZATIONS
 
 
 class MockJsonSearcher(JsonSearcher):

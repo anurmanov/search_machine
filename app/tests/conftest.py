@@ -1,5 +1,5 @@
 import pytest
-from searchers.json.constants import USERS, TICKETS, ORGANIZATIONS
+from app.searchers.json.constants import USERS, TICKETS, ORGANIZATIONS
 
 
 @pytest.fixture()
