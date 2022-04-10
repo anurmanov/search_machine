@@ -39,10 +39,10 @@ class JsonSearcher(Searcher):
         result = []
         for item in self._db[entity]:
             if self._match(item, filter):
-                result.append(self.get_trimmed_copy_of_item(item, fields) if fields else copy(item))
+                result.append(self._get_trimmed_copy_of_item(item, fields) if fields else copy(item))
         return result
 
-    def get_trimmed_copy_of_item(self, item: dict, fields: list) -> dict:
+    def _get_trimmed_copy_of_item(self, item: dict, fields: list) -> dict:
         """
         Method copies an item and cut of all fields which is not in a list fields
         :param item: an item for trimming
@@ -58,7 +58,7 @@ class JsonSearcher(Searcher):
 
         return trimmed_item
 
-    def trim_item(self, item: dict, fields: list) -> None:
+    def _trim_item(self, item: dict, fields: list) -> None:
         """
         Method removes all redundant fields in the item
         :param item: an item for trimming
@@ -165,9 +165,12 @@ class JsonSearcher(Searcher):
 
         return related_result
 
+    def get_record_by_index(self, entity: str, index: int = 0) -> dict:
+        return self._db[entity][index]
+
     def search(self, payload: dict) -> dict:
         """
-        The main method 
+        The main method
         :param payload: a description of what we looking for
         :return: the search result
         """
@@ -180,7 +183,7 @@ class JsonSearcher(Searcher):
         if search_results:
             for item in search_results:
                 related = self._get_related(entity, item, include)
-                self.trim_item(item, fields )
+                self._trim_item(item, fields)
                 item.update(related)
 
         return {entity: search_results}
