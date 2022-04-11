@@ -80,9 +80,6 @@ def interrogate_user() -> Tuple[Optional[str], Optional[str], Optional[str]]:
 
 
 def build_a_payload(entity: str, field: str, value: str) -> dict:
-    # what do we search?
-    # how it must look like?
-    # it is an example of the payload
     include = None
     if entity == 'users':
         include = {
@@ -100,6 +97,9 @@ def build_a_payload(entity: str, field: str, value: str) -> dict:
             "tickets": []
         }
 
+    # what do we search?
+    # how it must look like?
+    # it is an example of the payload
     payload = {
         "entity": entity,
         "filter": {
