@@ -115,7 +115,7 @@ def search(payload: dict):
     try:
         response = requests.post(search_url, json=payload, timeout=3)
         if response.status_code == 200:
-            # output to the console a response in a pretty format
+            # output the result in a pretty format to the console
             resp_obj = json.loads(response.text)
             print('The result is: ')
             print(json.dumps(resp_obj, indent=2))
