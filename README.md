@@ -5,7 +5,7 @@ Solution according to Technical task.pdf
 
 -----DESCRIPTION-----
 
-Hi, there.
+Hi there.
 
 Let me introduce my version of the search machine.
 It is consist of 2 parts: client and server.
@@ -24,6 +24,8 @@ To run server just run script run_server.sh or run_server_with_5_workers.sh, but
 The script run_server_with_5_workers.sh lets us to run 5 workers, but it was done just for showing ability of app.
 
 To stop server run script stop_server.sh
- 
+
+P.S. Despite of fact that the technical task looks like description of a simple console app. 
+I tried to perform it in a production-ready style, e.g. switching from JSON storage to Postgres will take minimal expenses. Performance issues are not forgotten as well, I meant workload balancing through running several workers and balancing them via nginx.
 
     
