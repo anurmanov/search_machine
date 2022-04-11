@@ -35,6 +35,10 @@ class JsonSearcher(Searcher):
                              fields: list = None) -> Optional[List[dict]]:
         """
         Matching items according to filter
+        :param entity: an entity we search in
+        :param filter: stores key-value pairs for filtering
+        :param fields: a list of fields which items must have
+        :return: a list of items matched on filter
         """
         result = []
         for item in self._db[entity]:
