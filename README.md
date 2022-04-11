@@ -1,4 +1,9 @@
-DESCRIPTION
+SEARCH MACHINE
+
+Solution according to Technical task.pdf
+
+
+-----DESCRIPTION-----
 
 Hi, there.
 
@@ -12,7 +17,7 @@ It is packed into docker-compose infrastructure and consists of worker and nginx
 
 The worker contains all business logic of the search machine. It is based on fastapi app and can be scaled up through docker's flag --scale worker=n (you will see it inside a run script)
 
-HOW TO RUN
+-----HOW TO RUN-----
 
 You need Docker to run the app.
 To run server just run script run_server.sh or run_server_with_5_workers.sh, but please DO NOT FORGET to give +x access rights for all shell scripts in working dir.
