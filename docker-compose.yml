@@ -1,10 +1,10 @@
 version: "3"
 services:
   worker:
-    build: ./worker
+    build: .
     image: worker:search_machine
     volumes:
-      - ./worker/app:/app
+      - ./app:/app
       - ./json:/db
     environment:
       - SEARCHER=json
