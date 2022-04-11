@@ -12,7 +12,7 @@ def interrogate_user() -> Tuple[Optional[str], Optional[str], Optional[str]]:
     """
     The boring function for extraction an entity
     and its pair of field-value via interrogation user =)
-    :return: tuple of entity and field
+    :return: tuple of entity, field and its value
     """
 
     entity = None
