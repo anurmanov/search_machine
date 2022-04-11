@@ -1,4 +1,3 @@
-import re
 from typing import Optional
 from datetime import datetime
 from fastapi import FastAPI, HTTPException
