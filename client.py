@@ -65,7 +65,7 @@ def interrogate_user() -> Tuple[Optional[str], Optional[str], Optional[str]]:
         value = ''
         while not value:
             value = input(
-                f"Please, enter '{field}' field's a value or 'quit' to exit app:").lower()
+                f"Please, enter '{field}' field's a value or 'quit' to exit app:")
 
         if value == 'quit':
             return None, None, None
