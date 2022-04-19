@@ -183,6 +183,11 @@ class JsonSearcher(Searcher):
         fields = payload.get('fields', [])
         include = payload.get('include', [])
 
+        # We are not afraid of the problem "N+1 requests",
+        # because our database (self._db) is in memory
+        # That is why af first we get items from entity
+        # through self._get_items_by_filter,
+        # then we fetch related items through self._get_related
         search_results = self._get_items_by_filter(entity, filter)
         if search_results:
             for item in search_results:
